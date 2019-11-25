@@ -7,6 +7,7 @@ type Configuration struct {
 	Database               Database               `yaml:"database"`
 	EmailServer            EmailServer            `yaml:"emailServer"`
 	DingTalkAuthentication DingTalkAuthentication `yaml:"dingtalk"`
+	Env                    string                 `yaml:"env"`
 }
 
 type EmailServer struct {
