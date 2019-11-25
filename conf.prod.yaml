@@ -1,0 +1,20 @@
+address: 8080
+database:
+  host: "127.0.0.1:3306"
+  user: "root"
+  password: ""
+  databaseName: "xdhuxc-message"
+  log: true
+  maxIdleConns: 10
+  maxOpenConns: 100
+emailServer:
+  user: ""
+  password: ""
+  smtpServer: "smtp.exmail.qq.com"
+  port: 465
+  ssl: true
+dingtalk:
+  agentID: 1
+  corpID: ""
+  corpSecret: ""
+

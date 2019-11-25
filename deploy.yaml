@@ -1,0 +1,93 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: xdhuxc-message
+  name: xdhuxc-message-cm
+  namespace: xdhuxc
+data:
+  conf.prod.yaml: |-
+    address: 8080
+    database:
+      host: "127.0.0.1:3306"
+      user: "root"
+      password: ""
+      databaseName: "xdhuxc-message"
+      log: true
+      maxIdleConns: 10
+      maxOpenConns: 100
+    emailServer:
+      user: ""
+      password: ""
+      smtpServer: "smtp.exmail.qq.com"
+      port: 465
+      ssl: true
+    dingtalk:
+      agentID: 1
+      corpID: ""
+      corpSecret: ""
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: xdhuxc-message
+  namespace: xdhuxc
+  labels:
+    app: xdhuxc-message
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xdhuxc-message
+  template:
+    metadata:
+      labels:
+        app: xdhuxc-message
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: xdhuxc-message-cm
+      containers:
+        - name: xdhuxc-message
+          image: 'dockerhub.com/xdhuxc/xdhuxc-message:v0.0.1'
+          env:
+            - name: 'CPUS'
+              value: '1'
+          resources:
+            limits:
+              cpu: '0.5'
+              memory: 512Mi
+            requests:
+              cpu: '0.5'
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/xdhuxc/
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /api/v1/healthcheck
+              port: 80
+      imagePullSecrets:
+        - name: default-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: xdhuxc-message
+  name: xdhuxc-message
+  namespace: xdhuxc
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: xdhuxc-message
