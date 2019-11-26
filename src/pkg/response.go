@@ -26,6 +26,7 @@ const (
 	UpdateMessageStatusError string = "500-100008"
 	NoSuchMessageError       string = "500-100009"
 	MessageHasBeenSentError  string = "500-100010"
+	AbsentOfMessageIDError   string = "500-100010"
 )
 
 func WriteResponse(resp *restful.Response, code string, result interface{}) {

@@ -55,7 +55,6 @@ func (dts *dingTalkService) Send(dt model.DingTalk) error {
 	if err != nil {
 		return err
 	}
-
 	messageURL := fmt.Sprintf(pkg.DingTalkSendMessageURLTemplate, token)
 	data, err := dts.ConvertToDingTalkMessage(dt)
 	if err != nil {
@@ -63,6 +62,9 @@ func (dts *dingTalkService) Send(dt model.DingTalk) error {
 	}
 
 	body, err := utils.DoPostWithURL(messageURL, data)
+	if err != nil {
+		return err
+	}
 	errorCode := gjson.GetBytes(body, "errcode").Int()
 	if errorCode != 0 {
 		errorMessage := gjson.GetBytes(body, "errmsg").String()

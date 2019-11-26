@@ -1,13 +1,15 @@
 package api
 
 import (
-	"github.com/emicklei/go-restful"
-	restfulspec "github.com/emicklei/go-restful-openapi"
-	"github.com/xdhuxc/xdhuxc-message/src/model"
-	"github.com/xdhuxc/xdhuxc-message/src/pkg"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/emicklei/go-restful"
+	restfulspec "github.com/emicklei/go-restful-openapi"
+
+	"github.com/xdhuxc/xdhuxc-message/src/model"
+	"github.com/xdhuxc/xdhuxc-message/src/pkg"
 )
 
 type MessageController struct {
@@ -71,11 +73,12 @@ func (mc *MessageController) Create(req *restful.Request, resp *restful.Response
 			}
 			// 操作审计
 			_ = mc.bs.AuditService.Create(model.OperationAudit{
-				User:       m.User,
+				User:       result.User,
 				Operate:    model.OperatingTypeAdd,
 				Object:     model.MessageTypeDingTalk,
 				CreateTime: time.Now(),
 			})
+
 			pkg.WriteResponse(resp, pkg.SendMessageError, sme)
 			return
 		}
@@ -91,7 +94,7 @@ func (mc *MessageController) Create(req *restful.Request, resp *restful.Response
 			}
 			// 操作审计
 			_ = mc.bs.AuditService.Create(model.OperationAudit{
-				User:       m.User,
+				User:       result.User,
 				Operate:    model.OperatingTypeAdd,
 				Object:     model.MessageTypeWeChat,
 				CreateTime: time.Now(),
@@ -103,12 +106,11 @@ func (mc *MessageController) Create(req *restful.Request, resp *restful.Response
 
 	// 入库
 	m.IsSent = true
-	result, err := mc.bs.MessageService.Create(m)
-	if err != nil {
-		pkg.WriteResponse(resp, pkg.CreateMessageError, err)
+	result, cme = mc.bs.MessageService.Create(m)
+	if cme != nil {
+		pkg.WriteResponse(resp, pkg.CreateMessageError, cme)
 		return
 	}
-
 	_ = mc.bs.AuditService.Create(model.OperationAudit{
 		User:       m.User,
 		Operate:    model.OperatingTypeAdd,
@@ -121,6 +123,10 @@ func (mc *MessageController) Create(req *restful.Request, resp *restful.Response
 
 func (mc *MessageController) Retry(req *restful.Request, resp *restful.Response) {
 	messageID, err := strconv.ParseInt(req.PathParameter("id"), 10, 64)
+	if err != nil {
+		pkg.WriteResponse(resp, pkg.AbsentOfMessageIDError, err)
+		return
+	}
 	m, err := mc.bs.MessageService.GetMessageByID(messageID)
 	if err != nil {
 		pkg.WriteResponse(resp, pkg.NoSuchMessageError, err)
@@ -157,6 +163,10 @@ func (mc *MessageController) Retry(req *restful.Request, resp *restful.Response)
 
 func (mc *MessageController) Again(req *restful.Request, resp *restful.Response) {
 	messageID, err := strconv.ParseInt(req.PathParameter("id"), 10, 64)
+	if err != nil {
+		pkg.WriteResponse(resp, pkg.AbsentOfMessageIDError, err)
+		return
+	}
 	m, err := mc.bs.MessageService.GetMessageByID(messageID)
 	if err != nil {
 		pkg.WriteResponse(resp, pkg.NoSuchMessageError, err)

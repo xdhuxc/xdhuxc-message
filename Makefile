@@ -38,3 +38,8 @@ clean:
 frontend:
 	@cd frontend && npm install --registry=https://registry.npm.taobao.org
 	@cd frontend && npm run build
+
+check:
+	@echo ">> golangci check ..."
+	@golangci-lint run
+	@echo ">> the check is end."

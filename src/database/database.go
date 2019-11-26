@@ -10,10 +10,6 @@ import (
 	"github.com/xdhuxc/xdhuxc-message/src/model"
 )
 
-type MysqlClient struct {
-	client *gorm.DB
-}
-
 func NewMysqlClient(database model.Database) (*gorm.DB, error) {
 	uri := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		database.User,
