@@ -1,5 +1,8 @@
 address: 8080
 env: "test"
+log:
+  format: "json"  # json 或 text
+  level: "debug"  # 日志级别
 database:
   host: "127.0.0.1:3306"
   user: "root"
