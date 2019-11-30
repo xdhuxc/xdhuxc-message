@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"runtime"
 	"strconv"
@@ -27,16 +26,23 @@ func init() {
 func main() {
 	flag.Parse()
 
-	err := conf.InitConfiguration(*cf)
+	c, err := conf.InitConfiguration(*cf)
 	if err != nil {
 		log.Fatalf("init config error: %v", err)
 		return
 	}
-	app := api.NewRouter()
 
+	switch c.Log.Format {
+	case "json":
+		log.SetFormatter(&log.JSONFormatter{})
+	default:
+		log.SetFormatter(&log.TextFormatter{})
+	}
+	level, _ := log.ParseLevel(c.Log.Level)
+	log.SetLevel(level)
+
+	app := api.NewRouter()
 	if err := app.Run(); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "%v\n", err)
 		log.Fatal(err)
 	}
-
 }

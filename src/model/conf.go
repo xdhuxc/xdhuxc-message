@@ -8,6 +8,12 @@ type Configuration struct {
 	EmailServer            EmailServer            `yaml:"emailServer"`
 	DingTalkAuthentication DingTalkAuthentication `yaml:"dingtalk"`
 	Env                    string                 `yaml:"env"`
+	Log                    Log                    `yaml:"log"`
+}
+
+type Log struct {
+	Format string `yaml:"format"`
+	Level  string `yaml:"level"`
 }
 
 type EmailServer struct {

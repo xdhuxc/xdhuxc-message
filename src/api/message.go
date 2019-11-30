@@ -28,17 +28,26 @@ func newMessageController(baseController *BaseController) *MessageController {
 		Returns(http.StatusOK, "OK", model.Result{}).
 		Returns(http.StatusBadRequest, "ERROR", model.Result{}))
 
-	mc.ws.Route(mc.ws.POST("/message/{id}/retry").
+	mc.ws.Route(mc.ws.GET("/message/{id}/retry").
 		To(mc.Retry).
 		Doc("retry to send the specified message if it has not been sent").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Returns(http.StatusOK, "OK", model.Result{}).
 		Returns(http.StatusBadRequest, "ERROR", model.Result{}))
 
-	mc.ws.Route(mc.ws.POST("/message/{id}/again").
+	mc.ws.Route(mc.ws.GET("/message/{id}/again").
 		To(mc.Again).
 		Doc("send the specified message again, whether it has been sent or not").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(http.StatusOK, "OK", model.Result{}).
+		Returns(http.StatusBadRequest, "ERROR", model.Result{}))
+
+	mc.ws.Route(mc.ws.GET("/messages").
+		To(mc.List).
+		Reads(model.Message{}).
+		Doc("paginate messages").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Param(mc.ws.QueryParameter("query", "the query parameter").DataType("string").Required(false)).
 		Returns(http.StatusOK, "OK", model.Result{}).
 		Returns(http.StatusBadRequest, "ERROR", model.Result{}))
 
@@ -197,4 +206,22 @@ func (mc *MessageController) Again(req *restful.Request, resp *restful.Response)
 	}
 
 	_ = resp.WriteEntity(model.NewResult(0, nil, m))
+}
+
+func (mc *MessageController) List(req *restful.Request, resp *restful.Response) {
+	keyword := req.QueryParameter("query")
+
+	page, ok := req.Attribute("page").(model.Page)
+	if !ok {
+		pkg.WriteResponse(resp, pkg.ListMessagesError, "the absent of parameter page")
+		return
+	}
+
+	count, messages, err := mc.bs.MessageService.List(keyword, page)
+	if err != nil {
+		pkg.WriteResponse(resp, pkg.ListMessagesError, err)
+		return
+	}
+
+	_ = resp.WriteEntity(model.NewResult(count, &page, messages))
 }

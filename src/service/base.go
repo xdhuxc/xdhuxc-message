@@ -11,6 +11,7 @@ type BaseService struct {
 	EmailService       *emailService
 	DingTalkService    *dingTalkService
 	HealthCheckService *healthCheckService
+	MetricsService     *metricsService
 }
 
 func NewBaseService(dta model.DingTalkAuthentication, emailServer model.EmailServer, db *gorm.DB) *BaseService {
@@ -20,5 +21,6 @@ func NewBaseService(dta model.DingTalkAuthentication, emailServer model.EmailSer
 		EmailService:       newEmailService(emailServer),
 		DingTalkService:    newDingTalkService(dta),
 		HealthCheckService: newHelathCheckService(db),
+		MetricsService:     newMetricsService(db),
 	}
 }

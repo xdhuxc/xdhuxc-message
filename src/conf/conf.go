@@ -8,22 +8,22 @@ import (
 	"github.com/xdhuxc/xdhuxc-message/src/model"
 )
 
-var conf model.Configuration
+var conf *model.Configuration
 
-func InitConfiguration(path string) error {
+func InitConfiguration(path string) (*model.Configuration, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		return err
+		return conf, err
 	}
 
 	err = yaml.Unmarshal(data, &conf)
 	if err != nil {
-		return err
+		return conf, err
 	}
 
-	return nil
+	return conf, nil
 }
 
-func GetConfiguration() model.Configuration {
+func GetConfiguration() *model.Configuration {
 	return conf
 }

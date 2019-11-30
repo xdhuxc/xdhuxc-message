@@ -18,7 +18,7 @@ func newHealthCheckController(bc *BaseController) *healthCheckController {
 	tags := []string{"xdhuxc-message-health_check"}
 	hcc := &healthCheckController{bc}
 
-	hcc.ws.Route(hcc.ws.GET("/healthcheck").
+	hcc.ws.Route(hcc.ws.GET("/health").
 		To(hcc.Get).
 		Doc("health check").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

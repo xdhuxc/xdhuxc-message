@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/emicklei/go-restful"
@@ -8,21 +9,21 @@ import (
 	"github.com/go-openapi/spec"
 )
 
-func swagger(c *restful.Container) {
+func swagger(c *restful.Container, address string) {
 	config := restfulspec.Config{
 		WebServices:                   c.RegisteredWebServices(),
-		WebServicesURL:                "http://0.0.0.0:8080",
-		APIPath:                       "/api/v1/docs.json",
+		WebServicesURL:                fmt.Sprintf(":%s", address),
+		APIPath:                       "/docs.json",
 		PostBuildSwaggerObjectHandler: enrichSwaggerObject}
 
-	c.Handle("/api/v1/docs/", http.StripPrefix("/api/v1/docs/", http.FileServer(http.Dir("dist"))))
+	c.Handle("/docs/", http.StripPrefix("/docs/", http.FileServer(http.Dir("dist"))))
 	c.Add(restfulspec.NewOpenAPIService(config))
 }
 
 func enrichSwaggerObject(swo *spec.Swagger) {
 	swo.Info = &spec.Info{
 		InfoProps: spec.InfoProps{
-			Title:       "xdhuxc-message Apiserver",
+			Title:       "Xdhuxc Message APIServer",
 			Description: "Resource for managing xdhuxc-message api",
 			Contact: &spec.ContactInfo{
 				Name:  "xdhuxc",
@@ -36,6 +37,7 @@ func enrichSwaggerObject(swo *spec.Swagger) {
 			Version: "1.0.0",
 		},
 	}
+
 	swo.Tags = []spec.Tag{spec.Tag{TagProps: spec.TagProps{
 		Name:        "message",
 		Description: "Managing message"}}}

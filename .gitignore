@@ -19,3 +19,7 @@ xdhuxc-message
 vendor/
 .idea/
 .DS_Store
+
+# configuration
+./conf.local.yaml
+

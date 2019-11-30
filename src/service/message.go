@@ -51,11 +51,11 @@ func (ms *messageService) GetMessageByID(id int64) (*model.Message, error) {
 	return &m, nil
 }
 
-func (ms *messageService) List(messageType string, page model.Page) (int64, []model.Message, error) {
+func (ms *messageService) List(keyword string, page model.Page) (int64, []model.Message, error) {
 	var count int64
 	var messages []model.Message
 
-	if messageType == "" {
+	if keyword == "" {
 		if err := ms.db.Model(&model.Message{}).
 			Count(&count).
 			Offset(page.Offset).
@@ -65,8 +65,9 @@ func (ms *messageService) List(messageType string, page model.Page) (int64, []mo
 			return count, messages, err
 		}
 	} else {
+		expression := "Match (user, sender, message_type, content, description, email_type, subject) AGAINST ('" + keyword + "' IN NATURAL LANGUAGE MODE)"
 		if err := ms.db.Model(&model.Message{}).
-			Where("message_type = ?", messageType).
+			Where(expression).
 			Count(&count).
 			Offset(page.Offset).
 			Limit(page.PageSize).
