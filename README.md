@@ -12,9 +12,9 @@
 
 4、全字段文本查找：已经支持，但是有点问题
 
-5、钉钉消息发送到个人工作通知好群组：目前可以发送到个人消息通知
+5、钉钉消息发送到个人工作通知和群组：目前可以发送到个人消息通知
 
-6、重新设计错误码格式
+6、重新设计错误码格式：已经支持
 
 7、增加操作审计：已经支持
 
@@ -22,10 +22,35 @@
 
 
 ### 错误码设计
-
-错误码 | 类型 | 含义
-- | - | - 
-00001 | 
+```
+// 消息
+MessageHasBeenSent string = "200-0220001"
+// 参数错误
+ReadEntityError string = "400-0140001"
+// 权限错误
+AuthorityFailed   string = "401-0140003"
+InvalidParameters string = "400-0140004"
+// 参数缺失
+MissingMessageIDError     string = "400-0240001"
+MissingPageParameterError string = "400-0240002"
+// 消息错误
+MessageDataError         string = "400-0240003"
+HealthCheckError         string = "400-0240004"
+CreateMessageError       string = "400-0240005"
+SendMessageError         string = "400-0240006"
+UpdateMessageStatusError string = "400-0240007"
+NoSuchMessageError       string = "400-0240008"
+ListMessagesError        string = "400-0240009"
+```
+示例如下：
+```
+200-02-2-0001
+```
+含义如下：
+* 200：HTTP 状态码，也是最终的响应的状态码，和 HTTP 状态码的含义保持一致
+* 02：资源类型：为每一种资源或错误类别使用两位数字来表示
+* 2：HTTP 状态码第一位的数值，主要是为了在每种 HTTP 状态码下，返回的错误码均不同，可以单独作为主键
+* 0001：当前错误的错误码，以此递增即可
 
 ### 接口说明
 

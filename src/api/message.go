@@ -133,7 +133,7 @@ func (mc *MessageController) Create(req *restful.Request, resp *restful.Response
 func (mc *MessageController) Retry(req *restful.Request, resp *restful.Response) {
 	messageID, err := strconv.ParseInt(req.PathParameter("id"), 10, 64)
 	if err != nil {
-		pkg.WriteResponse(resp, pkg.AbsentOfMessageIDError, err)
+		pkg.WriteResponse(resp, pkg.MissingMessageIDError, err)
 		return
 	}
 	m, err := mc.bs.MessageService.GetMessageByID(messageID)
@@ -142,7 +142,7 @@ func (mc *MessageController) Retry(req *restful.Request, resp *restful.Response)
 		return
 	}
 	if m.IsSent {
-		pkg.WriteResponse(resp, pkg.MessageHasBeenSentError, err)
+		pkg.WriteResponse(resp, pkg.MessageHasBeenSent, nil)
 		return
 	}
 
@@ -173,7 +173,7 @@ func (mc *MessageController) Retry(req *restful.Request, resp *restful.Response)
 func (mc *MessageController) Again(req *restful.Request, resp *restful.Response) {
 	messageID, err := strconv.ParseInt(req.PathParameter("id"), 10, 64)
 	if err != nil {
-		pkg.WriteResponse(resp, pkg.AbsentOfMessageIDError, err)
+		pkg.WriteResponse(resp, pkg.MissingMessageIDError, err)
 		return
 	}
 	m, err := mc.bs.MessageService.GetMessageByID(messageID)
@@ -213,7 +213,7 @@ func (mc *MessageController) List(req *restful.Request, resp *restful.Response) 
 
 	page, ok := req.Attribute("page").(model.Page)
 	if !ok {
-		pkg.WriteResponse(resp, pkg.ListMessagesError, "the absent of parameter page")
+		pkg.WriteResponse(resp, pkg.MissingPageParameterError, "the absent of parameter page")
 		return
 	}
 
