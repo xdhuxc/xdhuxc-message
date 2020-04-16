@@ -3,10 +3,11 @@ package model
 import (
 	"encoding/json"
 	"errors"
-	"github.com/asaskevich/govalidator"
-	"github.com/xdhuxc/xdhuxc-message/src/pkg"
 	"time"
 
+	"github.com/asaskevich/govalidator"
+
+	"github.com/xdhuxc/xdhuxc-message/src/pkg"
 	"github.com/xdhuxc/xdhuxc-message/src/utils"
 )
 

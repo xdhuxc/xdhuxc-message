@@ -2,8 +2,6 @@ package service
 
 import (
 	"github.com/jinzhu/gorm"
-
-	"github.com/xdhuxc/asset-management-system/src/model"
 )
 
 type healthCheckService struct {

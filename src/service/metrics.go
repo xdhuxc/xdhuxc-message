@@ -3,9 +3,9 @@ package service
 import (
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
-	"github.com/xdhuxc/xdhuxc-message/src/pkg"
 
 	"github.com/xdhuxc/xdhuxc-message/src/model"
+	"github.com/xdhuxc/xdhuxc-message/src/pkg"
 )
 
 type metricsService struct {

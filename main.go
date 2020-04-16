@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
-	"os"
-	"runtime"
-	"strconv"
+	"net/http"
+	_ "net/http/pprof"
 
 	log "github.com/sirupsen/logrus"
+	_ "go.uber.org/automaxprocs"
 
 	"github.com/xdhuxc/xdhuxc-message/src/api"
 	"github.com/xdhuxc/xdhuxc-message/src/conf"
@@ -14,16 +14,11 @@ import (
 
 var cf = flag.String("conf", "conf.prod.yaml", "config path")
 
-func init() {
-	cpus := os.Getenv("CPUS")
-	if nums, err := strconv.Atoi(cpus); err != nil {
-		runtime.GOMAXPROCS(nums)
-	} else {
-		runtime.GOMAXPROCS(runtime.NumCPU())
-	}
-}
-
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("0.0.0.0:8005", nil))
+	}()
+
 	flag.Parse()
 
 	c, err := conf.InitConfiguration(*cf)

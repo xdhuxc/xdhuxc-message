@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/jinzhu/gorm"
+
 	"github.com/xdhuxc/xdhuxc-message/src/model"
 )
 

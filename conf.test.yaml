@@ -1,5 +1,6 @@
 address: 8080
 env: "test"
+debug: true
 log:
   format: "json"  # json 或 text
   level: "debug"  # 日志级别
